@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="index,follow" />
+  <meta name="github-repo" content="paithiov909/tokyor-timeline" />
+  <title>TokyoR Timeline</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="TokyoR Timeline" />
+  <meta property="og:description" content="TokyoRでの過去の発表タイトルをまとめたタイムライン" />
+  <meta property="og:url" content="https://paithiov909.github.io/tokyor-timeline/" />
+  <meta property="twitter:card" content="summary" />
+  <meta property="twitter:url" content="https://paithiov909.github.io/tokyor-timeline/" />
+  <meta property="twitter:title" content="TokyoR Timeline" />
+  <meta property="twitter:description" content="TokyoRでの過去の発表タイトルをまとめたタイムライン" />
+  <link rel="icon" href="https://fav.farm/🛤️" data-external="1" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-timeline/8.3.0/vis-timeline-graph2d.min.js"
+    integrity="sha512-Qiu/qk1hr3lVqQliPYHWevmNIZjp1wI0ZQXBHn32vQx9K9BCuqlqQCcsjmL1ClrmFZKi81rAwqRSFmaTdULxIQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-timeline/8.3.0/vis-timeline-graph2d.min.css"
+    integrity="sha512-KQvP81PiLLSehDxMeRLv58g78+Vtvecl6pCLFwkTi1Iz9UlkgjuHxWZsVAkS9fRuj/GN4E2iYlaj1iWWG6J8ig=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+  <style type="text/css">
+    p {
+      text-align: justify;
+    }
+
+    #timeline {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>TokyoR Timeline</h1>
+    <details>
+      <summary>これは何？</summary>
+      <p>
+        <a href="https://tokyor.connpass.com/" target="_blank"
+          rel="noopener noreferrer">Tokyo.R</a>での過去の発表タイトルをまとめたタイムラインです。ATNDに掲載されていた第1～70回の発表内容を見られるようにしたくて作成しました。
+        Wayback
+        Machineでアーカイブを確認できたもののうち、タイトルとして意味がありそうなものだけを手作業でコピペしてまとめています。めんどうだったので発表者などはまとめていません。connpassにイベントページがある第71回以降については、気が向いたらまとめるかもしれません。
+      </p>
+    </details>
+  </header>
+  <main>
+    <div id="timeline"></div>
+  </main>
+  <script type="text/javascript">
+    fetch("data.json")
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById('timeline');
+        const items = new vis.DataSet(data.map(el => {
+          return {
+            id: el.id,
+            content: `<a href=${el.misc} taregt="_blank" rel="noopener noreferrer">${el.content}</a>`,
+            title: `${el.title}@${el.start}`,
+            start: new Date(el.start),
+            type: 'point'
+          }
+        }));
+        const options = {
+          start: new Date('2010-01-01'),
+          editable: false,
+          orientation: 'top',
+          verticalScroll: true,
+          zoomable: false,
+          zoomMin: 1,
+          stack: true,
+          tooltip: {
+            followMouse: true,
+            overflowMethod: 'cap',
+            delay: 250
+          },
+          moment: function (date) {
+            return vis.moment(date).utcOffset('+09:00');
+          }
+        };
+        const timeline = new vis.Timeline(container, items, options);
+      })
+      .catch(error => console.error(error));
+  </script>
+</body>
+
+</html>
