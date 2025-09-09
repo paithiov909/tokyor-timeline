@@ -59,7 +59,7 @@
         const items = new vis.DataSet(data.map(el => {
           return {
             id: el.id,
-            content: `<a href=${el.misc} taregt="_blank" rel="noopener noreferrer">${el.content}</a>`,
+            content: `<a href="${el.misc}" target="_blank" rel="noopener noreferrer">${el.content}</a>`,
             title: `${el.title}@${el.start}`,
             start: new Date(el.start),
             type: 'point'
